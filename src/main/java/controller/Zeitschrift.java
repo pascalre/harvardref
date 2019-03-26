@@ -23,16 +23,15 @@ public class Zeitschrift implements Quelle {
     if (data == null)
       return "Error. Objekt nicht korrekt erstellt.";
 
-    StringBuffer sb = new StringBuffer("");
-
-    String Name = data.get("Name");
-    String Vorname = data.get("Vorname");
-    String Jahr = data.get("Jahr");
-    String ArtikelTitel = data.get("ArtikelTitel");
-    String ZeitschriftTitel = data.get("ZeitschriftTitel");
-    String Jahrgang = data.get("Jahrgang");
-    String Nummer = data.get("Nummer");
-    String Seitenbereich = data.get("Seitenbereich");
+    StringBuffer sb               = new StringBuffer("");
+    String       Name             = data.get("Name");
+    String       Vorname          = data.get("Vorname");
+    String       Jahr             = data.get("Jahr");
+    String       ArtikelTitel     = data.get("ArtikelTitel");
+    String       ZeitschriftTitel = data.get("ZeitschriftTitel");
+    String       Jahrgang         = data.get("Jahrgang");
+    String       Nummer           = data.get("Nummer");
+    String       Seitenbereich    = data.get("Seitenbereich");
 
     sb.append(Name + ", " + Vorname + " (" + Jahr + "):" + ArtikelTitel
         + ", in: " + ZeitschriftTitel + ", Jg. " + Jahrgang + ", Nr. "

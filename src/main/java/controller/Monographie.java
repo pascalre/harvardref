@@ -39,7 +39,7 @@ public class Monographie implements Quelle {
     sb.append(Name + ", " + Vorname + " (" + Jahr + "): " + Titel + ", ");
 
     if (HerausgeberNotEmpty)
-      sb.append(Herausgeber + "(Hrsg.), ");
+      sb.append(Herausgeber + " (Hrsg.), ");
 
     if (BindungNotEmpty)
       sb.append("Bd. " + Bindung + ", ");

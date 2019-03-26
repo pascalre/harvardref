@@ -21,19 +21,18 @@ public class Internet implements Quelle {
   public String toString(){
     if (data == null) return "Error. Objekt nicht korrekt erstellt.";
 
-    StringBuffer sb = new StringBuffer("");
-
-    String Name = data.get("Name");
-    boolean NameNotEmpty = !Name.equals("");
-    String Vorname = data.get("Vorname");
-    boolean VornameNotEmpty = !Vorname.equals("");
-    String Jahr = data.get("Jahr");
-    boolean JahrNotEmpty = !Jahr.equals("");
-    String Titel = data.get("Titel");
-    String Link = data.get("Link");
-    String AbrufTag = data.get("AbrufTag");
-    String AbrufMonat = data.get("AbrufMonat");
-    String AbrufJahr = data.get("AbrufJahr");
+    StringBuffer sb              = new StringBuffer("");
+    String       Name            = data.get("Name");
+    boolean      NameNotEmpty    = !Name.equals("");
+    String       Vorname         = data.get("Vorname");
+    boolean      VornameNotEmpty = !Vorname.equals("");
+    String       Jahr            = data.get("Jahr");
+    boolean      JahrNotEmpty    = !Jahr.equals("");
+    String       Titel           = data.get("Titel");
+    String       Link            = data.get("Link");
+    String       AbrufTag        = data.get("AbrufTag");
+    String       AbrufMonat      = data.get("AbrufMonat");
+    String       AbrufJahr       = data.get("AbrufJahr");
     
     if (NameNotEmpty) {
       sb.append(Name);

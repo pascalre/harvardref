@@ -87,7 +87,7 @@ public class GUI {
     lblCopyright.setAlignment(SWT.CENTER);
     lblCopyright.setBounds(0, 656, 733, 25);
     lblCopyright.setText("Copyright " + cal.get(Calendar.YEAR)
-        + " Pascal Reitermann - v1.0");
+        + " Pascal Reitermann - 1.0-SNAPSHOT");
 
     Label lblNewLabel = new Label(shlLiteraturverzeichnis, SWT.NONE);
     lblNewLabel.setImage(SWTResourceManager.getImage(GUI.class,

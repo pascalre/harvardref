@@ -22,16 +22,15 @@ public class WissArbeit implements Quelle {
     if (data == null)
       return "Error. Objekt nicht korrekt erstellt.";
 
-    StringBuffer sb = new StringBuffer("");
-
-    String Name = data.get("Name");
-    String Vorname = data.get("Vorname");
-    String Jahr = data.get("Jahr");
-    String Titel = data.get("Titel");
-    String Form = data.get("Form");
-    String Fach = data.get("Fach");
-    String Einrichtung = data.get("Einrichtung");
-    String Ort = data.get("Ort");
+    StringBuffer sb          = new StringBuffer("");
+    String       Name        = data.get("Name");
+    String       Vorname     = data.get("Vorname");
+    String       Jahr        = data.get("Jahr");
+    String       Titel       = data.get("Titel");
+    String       Form        = data.get("Form");
+    String       Fach        = data.get("Fach");
+    String       Einrichtung = data.get("Einrichtung");
+    String       Ort         = data.get("Ort");
     
     sb.append(Name + ", " + Vorname + " (" + Jahr + "): " + Titel + ", "
         + Form + " im Fach " + Fach + " d. " + Einrichtung + " in "

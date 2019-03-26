@@ -27,21 +27,20 @@ public class Sammelwerk implements Quelle {
     if (data == null)
       return "Error. Objekt nicht korrekt erstellt.";
 
-    StringBuffer sb = new StringBuffer("");
-
-    String Name = data.get("Name");
-    String Vorname = data.get("Vorname");
-    String Jahr = data.get("Jahr");
-    String BeitragsTitel = data.get("BeitragsTitel");
-    String Herausgeber = data.get("Herausgeber");
-    String Titel = data.get("Titel");
-    String Bindung = data.get("Bindung");
-    boolean BindungNotEmpty = !Bindung.equals("");
-    String Auflage = data.get("Auflage");
-    boolean AuflageNotEmpty = !Auflage.equals("");
-    String Ort = data.get("Ort");
-    String Verlag = data.get("Verlag");
-    String Seitenbereich = data.get("Seitenbereich");
+    StringBuffer sb              = new StringBuffer("");
+    String       Name            = data.get("Name");
+    String       Vorname         = data.get("Vorname");
+    String       Jahr            = data.get("Jahr");
+    String       BeitragsTitel   = data.get("BeitragsTitel");
+    String       Herausgeber     = data.get("Herausgeber");
+    String       Titel           = data.get("Titel");
+    String       Bindung         = data.get("Bindung");
+    boolean      BindungNotEmpty = !Bindung.equals("");
+    String       Auflage         = data.get("Auflage");
+    boolean      AuflageNotEmpty = !Auflage.equals("");
+    String       Ort             = data.get("Ort");
+    String       Verlag          = data.get("Verlag");
+    String       Seitenbereich   = data.get("Seitenbereich");
 
     sb.append(Name + ", " + Vorname + " (" + Jahr + "): " + BeitragsTitel
         + ", in: " + Herausgeber + " (Hrsg.), " + Titel + ", ");
