@@ -1,5 +1,6 @@
 # HarvardRef
 This program allows you to create bibliography with references made in harward notation.
+![Previw](docs/images/preview.png)
 
 # Build
 You can build the program with `mvn package`.
