@@ -3,46 +3,48 @@ package controller;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Internet implements Quelle {
+public class Internet implements Source {
   Map<String, String> data = new HashMap<String, String>();
 
-  public Internet(String Name, String Vorname, String Jahr, String Titel,
-      String Link, String AbrufTag, String AbrufMonat, String AbrufJahr) {
-    data.put("Name", Name);
-    data.put("Vorname", Vorname);
-    data.put("Jahr", Jahr);
-    data.put("Titel", Titel);
-    data.put("Link", Link);
-    data.put("AbrufTag", AbrufTag);
-    data.put("AbrufMonat", AbrufMonat);
-    data.put("AbrufJahr", AbrufJahr);
+  public Internet(String name, String forename, String year, String title, String link, String retrievalDay,
+      String retrievalMonth, String retrievalYear) {
+    data.put("name", name);
+    data.put("forename", forename);
+    data.put("year", year);
+    data.put("title", title);
+    data.put("link", link);
+    data.put("retrievalDay", retrievalDay);
+    data.put("retrievalMonth", retrievalMonth);
+    data.put("retrievalYear", retrievalYear);
   }
 
-  public String toString(){
-    if (data == null) return "Error. Objekt nicht korrekt erstellt.";
+  public String toString() {
+    if (data.isEmpty())
+      return "Error. Objekt nicht korrekt erstellt.";
 
-    StringBuffer sb              = new StringBuffer("");
-    String       Name            = data.get("Name");
-    boolean      NameNotEmpty    = !Name.equals("");
-    String       Vorname         = data.get("Vorname");
-    boolean      VornameNotEmpty = !Vorname.equals("");
-    String       Jahr            = data.get("Jahr");
-    boolean      JahrNotEmpty    = !Jahr.equals("");
-    String       Titel           = data.get("Titel");
-    String       Link            = data.get("Link");
-    String       AbrufTag        = data.get("AbrufTag");
-    String       AbrufMonat      = data.get("AbrufMonat");
-    String       AbrufJahr       = data.get("AbrufJahr");
-    
-    if (NameNotEmpty) {
-      sb.append(Name);
-      if (VornameNotEmpty) sb.append(", "+Vorname);
+    StringBuffer sb = new StringBuffer("");
+    String name = data.get("name");
+    String forename = data.get("forename");
+    String year = data.get("year");
+    String title = data.get("title");
+    String link = data.get("link");
+    String retrievalDay = data.get("retrievalDay");
+    String retrievalMonth = data.get("retrievalMonth");
+    String retrievalYear = data.get("retrievalYear");
+
+    if (!name.isEmpty()) {
+      sb.append(name);
+      if (!forename.isEmpty())
+        sb.append(", " + forename);
     }
-    
-    if (JahrNotEmpty) sb.append(" ("+Jahr+")");
-    sb.append(": "); 
-      
-    sb.append(Titel + ", [online] " + Link + " ["+AbrufTag+"."+AbrufMonat+"."+AbrufJahr+"].\r\n");
+
+    if (!year.isEmpty())
+      sb.append(" (" + year + ")");
+
+    sb.append(": ");
+
+    sb.append(title + ", [online] " + link + " [" + retrievalDay + "." + retrievalMonth + "." + retrievalYear
+        + "].\r\n");
     return sb.toString();
   }
 }
