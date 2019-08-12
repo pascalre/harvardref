@@ -1,10 +1,9 @@
 package controller;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
 
-public interface Source {
-  Map<String, String> data = new HashMap<String, String>();
+public class Source {
+  Map<String, String> data = new HashMap<>();
 
-  abstract String toString();
 }

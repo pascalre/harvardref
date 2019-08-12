@@ -1,10 +1,6 @@
 package controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class CollectedEdition implements Source {
-  Map<String, String> data = new HashMap<String, String>();
+public class CollectedEdition extends Source {
 
   // German: Sammelwerk
   public CollectedEdition(String name, String forename, String year, String contributionTitle, String publisher,
@@ -26,7 +22,7 @@ public class CollectedEdition implements Source {
     if (data.isEmpty())
       return "Error. Objekt nicht korrekt erstellt.";
 
-    StringBuffer sb = new StringBuffer("");
+    StringBuilder sb = new StringBuilder("");
     String name = data.get("name");
     String forename = data.get("forename");
     String year = data.get("year");

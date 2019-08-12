@@ -1,10 +1,6 @@
 package controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class Internet implements Source {
-  Map<String, String> data = new HashMap<String, String>();
+public class Internet extends Source {
 
   public Internet(String name, String forename, String year, String title, String link, String retrievalDay,
       String retrievalMonth, String retrievalYear) {
@@ -22,7 +18,7 @@ public class Internet implements Source {
     if (data.isEmpty())
       return "Error. Objekt nicht korrekt erstellt.";
 
-    StringBuffer sb = new StringBuffer("");
+    StringBuilder sb = new StringBuilder("");
     String name = data.get("name");
     String forename = data.get("forename");
     String year = data.get("year");

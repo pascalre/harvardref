@@ -1,10 +1,6 @@
 package controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class CompleteWorks implements Source {
-  Map<String, String> data = new HashMap<String, String>();
+public class CompleteWorks extends Source {
 
   // German: Gesamtausgabe
   public CompleteWorks(String name, String forename, String year, String title, String publisher, String binding,
@@ -24,7 +20,7 @@ public class CompleteWorks implements Source {
     if (data.isEmpty())
       return "Error. Objekt nicht korrekt erstellt.";
 
-    StringBuffer sb = new StringBuffer("");
+    StringBuilder sb = new StringBuilder("");
     String name = data.get("name");
     String forename = data.get("forename");
     String year = data.get("year");

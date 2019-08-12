@@ -5,8 +5,6 @@ import java.awt.datatransfer.StringSelection;
 import java.util.Calendar;
 import java.util.Date;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.SWT;
@@ -17,15 +15,12 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import controller.Internet;
 import controller.Monograph;
 import controller.CollectedEdition;
 import controller.CompleteWorks;
 import controller.AcademicPaper;
 import controller.Magazine;
-import view.SWTResourceManager;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Group;
 
@@ -33,6 +28,14 @@ public class GUI {
   Display display;
   protected Shell bibliographyShell;
   private Text[] textFields = new Text[60];
+  private static String missingDetailsMessage = "Bitte machen Sie alle notwendigen Angaben.";
+  private static String noValidYearMessage = "Bitte geben Sie eine gültige Zahl als Jahr an.";
+  private static String noValidDateMessage = "Bitte geben Sie das Datum korrekt an: TT MM JJJJ.";
+  private static String titleCreate = "Erzeugen";
+  private static String titlePrename = "Vorname";
+  private static String titleTitle = "Titel";
+  private static String titleEdition = "ggf. Auflage";
+  private static String titlePublisher = "Verlag";
 
   /**
    * Launch the application.
@@ -44,7 +47,7 @@ public class GUI {
       GUI window = new GUI();
       window.open();
     } catch (Exception e) {
-      e.printStackTrace();
+      System.out.println(e.getMessage());
     }
   }
 
@@ -93,11 +96,7 @@ public class GUI {
 
     Button buttonExportOutput = new Button(groupOutput, SWT.CHECK);
     buttonExportOutput.setEnabled(false);
-    buttonExportOutput.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-      }
-    });
+
     buttonExportOutput.setBounds(10, 10, 160, 18);
     buttonExportOutput.setText("exportieren nach:");
 
@@ -111,11 +110,7 @@ public class GUI {
 
     Button buttonSearch = new Button(groupOutput, SWT.NONE);
     buttonSearch.setEnabled(false);
-    buttonSearch.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-      }
-    });
+
     buttonSearch.setBounds(576, 6, 113, 28);
     buttonSearch.setText("Durchsuchen");
 
@@ -143,8 +138,7 @@ public class GUI {
     tabFolder.setLocation(10, 0);
     tabFolder.setSize(689, 278);
 
-    @SuppressWarnings("unused")
-    Composite compositeMain = new Composite(tabFolder, SWT.NONE);
+    new Composite(tabFolder, SWT.NONE);
 
     TabItem tabMonograph = new TabItem(tabFolder, SWT.NONE);
     tabMonograph.setText("Monographie");
@@ -158,7 +152,7 @@ public class GUI {
 
     Label labelForename = new Label(compositeMonograph, SWT.NONE);
     labelForename.setBounds(10, 30, 59, 14);
-    labelForename.setText("Vorname");
+    labelForename.setText(titlePrename);
 
     Label labelYear = new Label(compositeMonograph, SWT.NONE);
     labelYear.setBounds(10, 50, 59, 14);
@@ -166,7 +160,7 @@ public class GUI {
 
     Label labelTitle = new Label(compositeMonograph, SWT.NONE);
     labelTitle.setBounds(10, 70, 59, 14);
-    labelTitle.setText("Titel");
+    labelTitle.setText(titleTitle);
 
     Label labelPublisher = new Label(compositeMonograph, SWT.NONE);
     labelPublisher.setBounds(10, 110, 207, 20);
@@ -178,7 +172,7 @@ public class GUI {
 
     Label labelEdition = new Label(compositeMonograph, SWT.NONE);
     labelEdition.setBounds(10, 150, 107, 20);
-    labelEdition.setText("ggf. Auflage");
+    labelEdition.setText(titleEdition);
 
     Label labelPlace = new Label(compositeMonograph, SWT.NONE);
     labelPlace.setBounds(10, 170, 59, 14);
@@ -186,7 +180,7 @@ public class GUI {
 
     Label labelPress = new Label(compositeMonograph, SWT.NONE);
     labelPress.setBounds(10, 190, 59, 20);
-    labelPress.setText("Verlag");
+    labelPress.setText(titlePublisher);
 
     textFields[0] = new Text(compositeMonograph, SWT.BORDER);
     textFields[1] = new Text(compositeMonograph, SWT.BORDER);
@@ -209,61 +203,54 @@ public class GUI {
     textFields[8].setBounds(180, 185, 470, 19);
 
     Button buttonCreate = new Button(compositeMonograph, SWT.NONE);
-    buttonCreate.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-      }
-    });
+
     buttonCreate.setBounds(539, 205, 113, 28);
-    buttonCreate.setText("Erzeugen");
+    buttonCreate.setText(titleCreate);
 
     Button buttonDeleteRecords = new Button(compositeMonograph, SWT.NONE);
     buttonDeleteRecords.setEnabled(false);
     buttonDeleteRecords.setText("Löschen");
     buttonDeleteRecords.setBounds(420, 205, 113, 28);
-    buttonCreate.addListener(SWT.Selection, new Listener() {
-      public void handleEvent(Event e) {
-        switch (e.type) {
-        case SWT.Selection:
-          if (textFields[0].getText().equals("") || textFields[1].getText().equals("")
-              || textFields[2].getText().equals("") || textFields[3].getText().equals("")
-              || textFields[7].getText().equals("") || textFields[8].getText().equals("")) {
-            MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
-            messageBox.setMessage("Bitte machen Sie alle notwendigen Angaben.");
-            messageBox.open();
-            break;
-          }
-          if (!textFields[2].getText().equals("")) {
-            try {
-              Integer.parseInt(textFields[2].getText());
-            } catch (NumberFormatException ex) {
-              MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
-              messageBox.setMessage("Bitte geben Sie eine gültige Zahl als Jahr an.");
-              messageBox.open();
-              break;
-            }
-          }
-          if (!textFields[6].getText().equals("")) {
-            try {
-              Integer.parseInt(textFields[6].getText());
-            } catch (NumberFormatException ex) {
-              MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
-              messageBox.setMessage("Bitte geben Sie die Auflage in Form einer Ganzzahl an.");
-              messageBox.open();
-              break;
-            }
-          }
+    buttonCreate.addListener(SWT.Selection, e -> {
 
-          Monograph lit = new Monograph(textFields[0].getText(), textFields[1].getText(),
-              textFields[2].getText(), textFields[3].getText(), textFields[4].getText(),
-              textFields[5].getText(), textFields[6].getText(), textFields[7].getText(),
-              textFields[8].getText());
+      if (e.type != SWT.Selection) return;
 
-          String res = lit.toString();
-          setText(buttonCopyOutputToClipboard, res);
-          break;
+      if (textFields[0].getText().equals("") || textFields[1].getText().equals("")
+          || textFields[2].getText().equals("") || textFields[3].getText().equals("")
+          || textFields[7].getText().equals("") || textFields[8].getText().equals("")) {
+        MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
+        messageBox.setMessage(missingDetailsMessage);
+        messageBox.open();
+        return;
+      }
+      if (!textFields[2].getText().equals("")) {
+        try {
+          Integer.parseInt(textFields[2].getText());
+        } catch (NumberFormatException ex) {
+          MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
+          messageBox.setMessage(noValidYearMessage);
+          messageBox.open();
+          return;
         }
       }
+      if (!textFields[6].getText().equals("")) {
+        try {
+          Integer.parseInt(textFields[6].getText());
+        } catch (NumberFormatException ex) {
+          MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
+          messageBox.setMessage("Bitte geben Sie die Auflage in Form einer Ganzzahl an.");
+          messageBox.open();
+          return;
+        }
+      }
+
+      Monograph lit = new Monograph(textFields[0].getText(), textFields[1].getText(),
+          textFields[2].getText(), textFields[3].getText(), textFields[4].getText(),
+          textFields[5].getText(), textFields[6].getText(), textFields[7].getText(),
+          textFields[8].getText());
+
+      String res = lit.toString();
+      setText(buttonCopyOutputToClipboard, res);
     });
 
     TabItem tabCollectedEdition = new TabItem(tabFolder, SWT.NONE);
@@ -276,13 +263,13 @@ public class GUI {
     label.setText("Name");
     label.setBounds(10, 10, 59, 14);
 
-    Label label_11 = new Label(compositeCollectedEdition, SWT.NONE);
-    label_11.setText("Vorname");
-    label_11.setBounds(10, 30, 59, 14);
+    Label label11 = new Label(compositeCollectedEdition, SWT.NONE);
+    label11.setText(titlePrename);
+    label11.setBounds(10, 30, 59, 14);
 
-    Label label_12 = new Label(compositeCollectedEdition, SWT.NONE);
-    label_12.setText("Jahr");
-    label_12.setBounds(10, 50, 59, 14);
+    Label label12 = new Label(compositeCollectedEdition, SWT.NONE);
+    label12.setText("Jahr");
+    label12.setBounds(10, 50, 59, 14);
 
     Label contributionTitle = new Label(compositeCollectedEdition, SWT.NONE);
     contributionTitle.setText("Titel des Beitrags");
@@ -292,21 +279,21 @@ public class GUI {
     labelNameOfPublisher.setText("Vorname Name (Hrsg.)");
     labelNameOfPublisher.setBounds(10, 90, 207, 20);
 
-    Label labelTitle_1 = new Label(compositeCollectedEdition, SWT.NONE);
-    labelTitle_1.setText("Titel");
-    labelTitle_1.setBounds(10, 110, 59, 14);
+    Label labelTitle1 = new Label(compositeCollectedEdition, SWT.NONE);
+    labelTitle1.setText(titleTitle);
+    labelTitle1.setBounds(10, 110, 59, 14);
 
-    Label labelBinding_1 = new Label(compositeCollectedEdition, SWT.NONE);
-    labelBinding_1.setText("ggf. Bindung");
-    labelBinding_1.setBounds(10, 130, 107, 20);
+    Label labelBinding1 = new Label(compositeCollectedEdition, SWT.NONE);
+    labelBinding1.setText("ggf. Bindung");
+    labelBinding1.setBounds(10, 130, 107, 20);
 
-    Label labelEdition_2 = new Label(compositeCollectedEdition, SWT.NONE);
-    labelEdition_2.setText("ggf. Auflage");
-    labelEdition_2.setBounds(10, 150, 137, 20);
+    Label labelEdition2 = new Label(compositeCollectedEdition, SWT.NONE);
+    labelEdition2.setText(titleEdition);
+    labelEdition2.setBounds(10, 150, 137, 20);
 
-    Label labelPlace_1 = new Label(compositeCollectedEdition, SWT.NONE);
-    labelPlace_1.setText("Ort");
-    labelPlace_1.setBounds(10, 170, 59, 14);
+    Label labelPlace1 = new Label(compositeCollectedEdition, SWT.NONE);
+    labelPlace1.setText("Ort");
+    labelPlace1.setBounds(10, 170, 59, 14);
 
     textFields[36] = new Text(compositeCollectedEdition, SWT.BORDER);
     textFields[38] = new Text(compositeCollectedEdition, SWT.BORDER);
@@ -332,57 +319,48 @@ public class GUI {
     textFields[47].setBounds(180, 185, 470, 19);
     textFields[48].setBounds(180, 205, 351, 19);
 
-    Button button_3 = new Button(compositeCollectedEdition, SWT.NONE);
-    button_3.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-      }
-    });
-    button_3.setText("Erzeugen");
-    button_3.setBounds(537, 203, 113, 28);
+    Button button3 = new Button(compositeCollectedEdition, SWT.NONE);
+    button3.setText(titleCreate);
+    button3.setBounds(537, 203, 113, 28);
+    button3.addListener(SWT.Selection, e -> {
+      if (e.type != SWT.Selection) return;
 
-    button_3.addListener(SWT.Selection, new Listener() {
-      public void handleEvent(Event e) {
-        switch (e.type) {
-        case SWT.Selection:
-          if (textFields[36].getText().equals("") || textFields[38].getText().equals("")
-              || textFields[39].getText().equals("") || textFields[40].getText().equals("")
-              || textFields[41].getText().equals("") || textFields[42].getText().equals("")
-              || textFields[45].getText().equals("") || textFields[47].getText().equals("")
-              || textFields[48].getText().equals("")) {
-            MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
-            messageBox.setMessage("Bitte machen Sie alle notwendigen Angaben.");
-            messageBox.open();
-            break;
-          }
-          try {
-            Integer.parseInt(textFields[39].getText());
-            if (!textFields[44].getText().endsWith(""))
-              Integer.parseInt(textFields[44].getText());
-          } catch (NumberFormatException ex) {
-            MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
-            messageBox.setMessage("Bitte geben Sie eine gültige Zahl als Jahr und ggf. als Auflage an.");
-            messageBox.open();
-            break;
-          }
-          CollectedEdition lit = new CollectedEdition(textFields[36].getText(), textFields[38].getText(),
-              textFields[39].getText(), textFields[40].getText(), textFields[41].getText(),
-              textFields[42].getText(), textFields[43].getText(), textFields[44].getText(),
-              textFields[45].getText(), textFields[47].getText(), textFields[48].getText());
-
-          String res = lit.toString();
-          setText(buttonCopyOutputToClipboard, res);
-        }
+      if (textFields[36].getText().equals("") || textFields[38].getText().equals("")
+          || textFields[39].getText().equals("") || textFields[40].getText().equals("")
+          || textFields[41].getText().equals("") || textFields[42].getText().equals("")
+          || textFields[45].getText().equals("") || textFields[47].getText().equals("")
+          || textFields[48].getText().equals("")) {
+        MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
+        messageBox.setMessage(missingDetailsMessage);
+        messageBox.open();
+        return;
       }
+      try {
+        Integer.parseInt(textFields[39].getText());
+        if (!textFields[44].getText().endsWith(""))
+          Integer.parseInt(textFields[44].getText());
+      } catch (NumberFormatException ex) {
+        MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
+        messageBox.setMessage("Bitte geben Sie eine gültige Zahl als Jahr und ggf. als Auflage an.");
+        messageBox.open();
+        return;
+      }
+      CollectedEdition lit = new CollectedEdition(textFields[36].getText(), textFields[38].getText(),
+          textFields[39].getText(), textFields[40].getText(), textFields[41].getText(),
+          textFields[42].getText(), textFields[43].getText(), textFields[44].getText(),
+          textFields[45].getText(), textFields[47].getText(), textFields[48].getText());
+
+      String res = lit.toString();
+      setText(buttonCopyOutputToClipboard, res);
     });
 
-    Label labelPress_1 = new Label(compositeCollectedEdition, SWT.NONE);
-    labelPress_1.setText("Verlag");
-    labelPress_1.setBounds(10, 190, 59, 20);
+    Label labelPress1 = new Label(compositeCollectedEdition, SWT.NONE);
+    labelPress1.setText(titlePublisher);
+    labelPress1.setBounds(10, 190, 59, 20);
 
-    Label labelPageSector_1 = new Label(compositeCollectedEdition, SWT.NONE);
-    labelPageSector_1.setText("Seitenbereich");
-    labelPageSector_1.setBounds(10, 210, 99, 14);
+    Label labelPageSector1 = new Label(compositeCollectedEdition, SWT.NONE);
+    labelPageSector1.setText("Seitenbereich");
+    labelPageSector1.setBounds(10, 210, 99, 14);
 
     TabItem tabCompleteWorks = new TabItem(tabFolder, SWT.NONE);
     tabCompleteWorks.setText("Gesamtausgabe");
@@ -390,41 +368,41 @@ public class GUI {
     Composite compositeCompleteWorks = new Composite(tabFolder, SWT.NONE);
     tabCompleteWorks.setControl(compositeCompleteWorks);
 
-    Label label_13 = new Label(compositeCompleteWorks, SWT.NONE);
-    label_13.setText("Name");
-    label_13.setBounds(10, 10, 59, 14);
+    Label label13 = new Label(compositeCompleteWorks, SWT.NONE);
+    label13.setText("Name");
+    label13.setBounds(10, 10, 59, 14);
 
-    Label label_14 = new Label(compositeCompleteWorks, SWT.NONE);
-    label_14.setText("Vorname");
-    label_14.setBounds(10, 30, 59, 14);
+    Label label14 = new Label(compositeCompleteWorks, SWT.NONE);
+    label14.setText(titlePrename);
+    label14.setBounds(10, 30, 59, 14);
 
-    Label label_15 = new Label(compositeCompleteWorks, SWT.NONE);
-    label_15.setText("Jahr");
-    label_15.setBounds(10, 50, 59, 14);
+    Label label15 = new Label(compositeCompleteWorks, SWT.NONE);
+    label15.setText("Jahr");
+    label15.setBounds(10, 50, 59, 14);
 
     Label labelTitleOfVolume = new Label(compositeCompleteWorks, SWT.NONE);
     labelTitleOfVolume.setText("Titel des Bandes");
     labelTitleOfVolume.setBounds(10, 70, 145, 14);
 
-    Label label_17 = new Label(compositeCompleteWorks, SWT.NONE);
-    label_17.setText("ggf. Vorname Name (Hrsg.)");
-    label_17.setBounds(10, 90, 207, 20);
+    Label label17 = new Label(compositeCompleteWorks, SWT.NONE);
+    label17.setText("ggf. Vorname Name (Hrsg.)");
+    label17.setBounds(10, 90, 207, 20);
 
-    Label labelBinding_2 = new Label(compositeCompleteWorks, SWT.NONE);
-    labelBinding_2.setText("Bindung");
-    labelBinding_2.setBounds(10, 110, 107, 20);
+    Label labelBinding2 = new Label(compositeCompleteWorks, SWT.NONE);
+    labelBinding2.setText("Bindung");
+    labelBinding2.setBounds(10, 110, 107, 20);
 
-    Label label_19 = new Label(compositeCompleteWorks, SWT.NONE);
-    label_19.setText("ggf. Auflage");
-    label_19.setBounds(10, 130, 107, 20);
+    Label label19 = new Label(compositeCompleteWorks, SWT.NONE);
+    label19.setText(titleEdition);
+    label19.setBounds(10, 130, 107, 20);
 
-    Label label_20 = new Label(compositeCompleteWorks, SWT.NONE);
-    label_20.setText("Ort");
-    label_20.setBounds(10, 150, 59, 14);
+    Label label20 = new Label(compositeCompleteWorks, SWT.NONE);
+    label20.setText("Ort");
+    label20.setBounds(10, 150, 59, 14);
 
-    Label label_21 = new Label(compositeCompleteWorks, SWT.NONE);
-    label_21.setText("Verlag");
-    label_21.setBounds(10, 170, 59, 20);
+    Label label21 = new Label(compositeCompleteWorks, SWT.NONE);
+    label21.setText(titlePublisher);
+    label21.setBounds(10, 170, 59, 20);
 
     textFields[49] = new Text(compositeCompleteWorks, SWT.BORDER);
     textFields[50] = new Text(compositeCompleteWorks, SWT.BORDER);
@@ -446,45 +424,35 @@ public class GUI {
     textFields[56].setBounds(180, 145, 470, 19);
     textFields[57].setBounds(180, 165, 351, 19);
 
-    Button button_4 = new Button(compositeCompleteWorks, SWT.NONE);
-    button_4.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
+    Button button4 = new Button(compositeCompleteWorks, SWT.NONE);
+    button4.setText(titleCreate);
+    button4.setBounds(537, 163, 113, 28);
+    button4.addListener(SWT.Selection, e -> {
+      if (e.type != SWT.Selection) return;
+      if (textFields[49].getText().equals("") || textFields[50].getText().equals("")
+          || textFields[51].getText().equals("") || textFields[52].getText().equals("")
+          || textFields[53].getText().equals("") || textFields[54].getText().equals("")
+          || textFields[55].getText().equals("") || textFields[56].getText().equals("")
+          || textFields[57].getText().equals("")) {
+        MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
+        messageBox.setMessage(missingDetailsMessage);
+        messageBox.open();
+        return;
       }
-    });
-    button_4.setText("Erzeugen");
-    button_4.setBounds(537, 163, 113, 28);
-    
-    button_4.addListener(SWT.Selection, new Listener() {
-      public void handleEvent(Event e) {
-        switch (e.type) {
-        case SWT.Selection:
-          if (textFields[49].getText().equals("") || textFields[50].getText().equals("")
-              || textFields[51].getText().equals("") || textFields[52].getText().equals("")
-              || textFields[53].getText().equals("") || textFields[54].getText().equals("")
-              || textFields[55].getText().equals("") || textFields[56].getText().equals("")
-              || textFields[57].getText().equals("")) {
-            MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
-            messageBox.setMessage("Bitte machen Sie alle notwendigen Angaben.");
-            messageBox.open();
-            break;
-          }
-          try {
-            Integer.parseInt(textFields[51].getText());
-            if (!textFields[55].getText().endsWith(""))
-              Integer.parseInt(textFields[55].getText());
-          } catch (NumberFormatException ex) {
-            MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
-            messageBox.setMessage("Bitte geben Sie eine gültige Zahl als Jahr und ggf. als Auflage an.");
-            messageBox.open();
-            break;
-          }
-          CompleteWorks lit = new CompleteWorks(textFields[49].getText(), textFields[50].getText(), textFields[51].getText(), textFields[52].getText(), textFields[53].getText(), textFields[54].getText(), textFields[55].getText(), textFields[56].getText(), textFields[57].getText());
-  
-          String res = lit.toString();
-          setText(buttonCopyOutputToClipboard, res);
-        }
+      try {
+        Integer.parseInt(textFields[51].getText());
+        if (!textFields[55].getText().endsWith(""))
+          Integer.parseInt(textFields[55].getText());
+      } catch (NumberFormatException ex) {
+        MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
+        messageBox.setMessage("Bitte geben Sie eine gültige Zahl als Jahr und ggf. als Auflage an.");
+        messageBox.open();
+        return;
       }
+      CompleteWorks lit = new CompleteWorks(textFields[49].getText(), textFields[50].getText(), textFields[51].getText(), textFields[52].getText(), textFields[53].getText(), textFields[54].getText(), textFields[55].getText(), textFields[56].getText(), textFields[57].getText());
+
+      String res = lit.toString();
+      setText(buttonCopyOutputToClipboard, res);
     });
 
     TabItem tabInternet = new TabItem(tabFolder, SWT.NONE);
@@ -497,17 +465,17 @@ public class GUI {
     labelNameOrCompany.setText("Name oder Firma");
     labelNameOrCompany.setBounds(10, 10, 156, 14);
 
-    Label label_1 = new Label(compositeInternet, SWT.NONE);
-    label_1.setText("Vorname");
-    label_1.setBounds(10, 30, 59, 14);
+    Label label1 = new Label(compositeInternet, SWT.NONE);
+    label1.setText(titlePrename);
+    label1.setBounds(10, 30, 59, 14);
 
-    Label label_2 = new Label(compositeInternet, SWT.NONE);
-    label_2.setText("Jahr");
-    label_2.setBounds(10, 50, 59, 14);
+    Label label2 = new Label(compositeInternet, SWT.NONE);
+    label2.setText("Jahr");
+    label2.setBounds(10, 50, 59, 14);
 
-    Label label_3 = new Label(compositeInternet, SWT.NONE);
-    label_3.setText("Titel");
-    label_3.setBounds(10, 70, 59, 14);
+    Label label3 = new Label(compositeInternet, SWT.NONE);
+    label3.setText(titleTitle);
+    label3.setBounds(10, 70, 59, 14);
 
     textFields[11] = new Text(compositeInternet, SWT.BORDER);
     textFields[12] = new Text(compositeInternet, SWT.BORDER);
@@ -531,63 +499,52 @@ public class GUI {
     textFields[19].setText("" + cal.get(Calendar.YEAR));
 
     Button button = new Button(compositeInternet, SWT.NONE);
-    button.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-      }
-    });
-    button.setText("Erzeugen");
+    button.setText(titleCreate);
     button.setBounds(537, 123, 113, 28);
-
-    button.addListener(SWT.Selection, new Listener() {
-      public void handleEvent(Event e) {
-        switch (e.type) {
-        case SWT.Selection:
-          if (textFields[14].getText().equals("") || textFields[17].getText().equals("")) {
-            MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
-            messageBox.setMessage("Die Felder 'Titel', 'Link' und 'Datum' dürfen nicht leer sein.");
-            messageBox.open();
-            break;
-          }
-          if (!textFields[13].getText().equals("")) {
-            try {
-              Integer.parseInt(textFields[13].getText());
-            } catch (NumberFormatException ex) {
-              MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
-              messageBox.setMessage("Bitte geben Sie eine gültige Zahl als Jahr an.");
-              messageBox.open();
-              break;
-            }
-          }
-          if (textFields[15].getText().equals("") || textFields[15].getText().length() > 2
-              || textFields[18].getText().equals("") || textFields[18].getText().length() > 2
-              || textFields[19].getText().equals("") || textFields[19].getText().length() > 4) {
-            MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
-            messageBox.setMessage("Bitte geben Sie das Datum korrekt an: TT MM JJJJ.");
-            messageBox.open();
-            break;
-          }
+    button.addListener(SWT.Selection, e -> {
+        if (e.type != SWT.Selection) return;
+        if (textFields[14].getText().equals("") || textFields[17].getText().equals("")) {
+          MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
+          messageBox.setMessage("Die Felder 'Titel', 'Link' und 'Datum' dürfen nicht leer sein.");
+          messageBox.open();
+          return;
+        }
+        if (!textFields[13].getText().equals("")) {
           try {
-            Integer.parseInt(textFields[15].getText());
-            Integer.parseInt(textFields[18].getText());
-            Integer.parseInt(textFields[19].getText());
+            Integer.parseInt(textFields[13].getText());
           } catch (NumberFormatException ex) {
             MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
-            messageBox.setMessage("Bitte geben Sie das Datum korrekt an: TT MM JJJJ.");
+            messageBox.setMessage(noValidYearMessage);
             messageBox.open();
-            break;
+            return;
           }
-
-          Internet lit = new Internet(textFields[11].getText(), textFields[12].getText(),
-              textFields[13].getText(), textFields[14].getText(), textFields[17].getText(),
-              textFields[15].getText(), textFields[18].getText(), textFields[19].getText());
-
-          String res = lit.toString();
-
-          setText(buttonCopyOutputToClipboard, res);
-          break;
         }
-      }
+        if (textFields[15].getText().equals("") || textFields[15].getText().length() > 2
+            || textFields[18].getText().equals("") || textFields[18].getText().length() > 2
+            || textFields[19].getText().equals("") || textFields[19].getText().length() > 4) {
+          MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
+          messageBox.setMessage(noValidDateMessage);
+          messageBox.open();
+          return;
+        }
+        try {
+          Integer.parseInt(textFields[15].getText());
+          Integer.parseInt(textFields[18].getText());
+          Integer.parseInt(textFields[19].getText());
+        } catch (NumberFormatException ex) {
+          MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
+          messageBox.setMessage(noValidDateMessage);
+          messageBox.open();
+          return;
+        }
+
+        Internet lit = new Internet(textFields[11].getText(), textFields[12].getText(),
+            textFields[13].getText(), textFields[14].getText(), textFields[17].getText(),
+            textFields[15].getText(), textFields[18].getText(), textFields[19].getText());
+
+        String res = lit.toString();
+
+        setText(buttonCopyOutputToClipboard, res);
     });
 
     Label labelDate = new Label(compositeInternet, SWT.NONE);
@@ -598,13 +555,13 @@ public class GUI {
     labelLink.setText("Link");
     labelLink.setBounds(10, 110, 207, 14);
 
-    Label label_16 = new Label(compositeInternet, SWT.NONE);
-    label_16.setBounds(238, 130, 59, 14);
-    label_16.setText(".");
+    Label label16 = new Label(compositeInternet, SWT.NONE);
+    label16.setBounds(238, 130, 59, 14);
+    label16.setText(".");
 
-    Label label_18 = new Label(compositeInternet, SWT.NONE);
-    label_18.setText(".");
-    label_18.setBounds(303, 130, 59, 14);
+    Label label18 = new Label(compositeInternet, SWT.NONE);
+    label18.setText(".");
+    label18.setBounds(303, 130, 59, 14);
 
     TabItem tabMagazine = new TabItem(tabFolder, SWT.NONE);
     tabMagazine.setText("Zeitschrift");
@@ -612,17 +569,17 @@ public class GUI {
     Composite compositeMagazine = new Composite(tabFolder, SWT.NONE);
     tabMagazine.setControl(compositeMagazine);
 
-    Label label_8 = new Label(compositeMagazine, SWT.NONE);
-    label_8.setText("Name");
-    label_8.setBounds(10, 10, 59, 14);
+    Label label8 = new Label(compositeMagazine, SWT.NONE);
+    label8.setText("Name");
+    label8.setBounds(10, 10, 59, 14);
 
-    Label label_9 = new Label(compositeMagazine, SWT.NONE);
-    label_9.setText("Vorname");
-    label_9.setBounds(10, 30, 59, 14);
+    Label label9 = new Label(compositeMagazine, SWT.NONE);
+    label9.setText(titlePrename);
+    label9.setBounds(10, 30, 59, 14);
 
-    Label label_10 = new Label(compositeMagazine, SWT.NONE);
-    label_10.setText("Jahr");
-    label_10.setBounds(10, 50, 59, 14);
+    Label label10 = new Label(compositeMagazine, SWT.NONE);
+    label10.setText("Jahr");
+    label10.setBounds(10, 50, 59, 14);
 
     Label labelTitleOfArticle = new Label(compositeMagazine, SWT.NONE);
     labelTitleOfArticle.setText("Titel des Artikels");
@@ -632,9 +589,9 @@ public class GUI {
     labelTitleOfMagazine.setText("Titel der Zeitschrift");
     labelTitleOfMagazine.setBounds(10, 90, 207, 14);
 
-    Label labelYear_2 = new Label(compositeMagazine, SWT.NONE);
-    labelYear_2.setText("Jahrgang");
-    labelYear_2.setBounds(10, 110, 59, 20);
+    Label labelYear2 = new Label(compositeMagazine, SWT.NONE);
+    labelYear2.setText("Jahrgang");
+    labelYear2.setBounds(10, 110, 59, 20);
 
     Label labelNumber = new Label(compositeMagazine, SWT.NONE);
     labelNumber.setText("Nummer");
@@ -662,47 +619,36 @@ public class GUI {
     textFields[34].setBounds(180, 125, 470, 19);
     textFields[35].setBounds(180, 145, 351, 19);
 
-    Button button_2 = new Button(compositeMagazine, SWT.NONE);
-    button_2.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
+    Button button2 = new Button(compositeMagazine, SWT.NONE);
+    button2.setText(titleCreate);
+    button2.setBounds(537, 143, 113, 28);
+    button2.addListener(SWT.Selection, e -> {
+      if (e.type != SWT.Selection) return;
+      if (textFields[27].getText().equals("") || textFields[28].getText().equals("")
+          || textFields[30].getText().equals("") || textFields[31].getText().equals("")
+          || textFields[32].getText().equals("") || textFields[33].getText().equals("")
+          || textFields[34].getText().equals("") || textFields[35].getText().equals("")) {
+        MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
+        messageBox.setMessage(missingDetailsMessage);
+        messageBox.open();
+        return;
       }
-    });
-    button_2.setText("Erzeugen");
-    button_2.setBounds(537, 143, 113, 28);
-
-    button_2.addListener(SWT.Selection, new Listener() {
-      public void handleEvent(Event e) {
-        switch (e.type) {
-        case SWT.Selection:
-          if (textFields[27].getText().equals("") || textFields[28].getText().equals("")
-              || textFields[30].getText().equals("") || textFields[31].getText().equals("")
-              || textFields[32].getText().equals("") || textFields[33].getText().equals("")
-              || textFields[34].getText().equals("") || textFields[35].getText().equals("")) {
-            MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
-            messageBox.setMessage("Bitte machen Sie alle notwendigen Angaben.");
-            messageBox.open();
-            break;
-          }
-          try {
-            Integer.parseInt(textFields[33].getText());
-            Integer.parseInt(textFields[34].getText());
-          } catch (NumberFormatException ex) {
-            MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
-            messageBox.setMessage("Bitte geben Sie gültige Zahlen als Jahr und Nummer an.");
-            messageBox.open();
-            break;
-          }
-          Magazine lit = new Magazine(textFields[27].getText(), textFields[28].getText(),
-              textFields[30].getText(), textFields[31].getText(), textFields[32].getText(),
-              textFields[33].getText(), textFields[34].getText(), textFields[35].getText());
-
-          String res = lit.toString();
-
-          setText(buttonCopyOutputToClipboard, res);
-          break;
-        }
+      try {
+        Integer.parseInt(textFields[33].getText());
+        Integer.parseInt(textFields[34].getText());
+      } catch (NumberFormatException ex) {
+        MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
+        messageBox.setMessage("Bitte geben Sie gültige Zahlen als Jahr und Nummer an.");
+        messageBox.open();
+        return;
       }
+      Magazine lit = new Magazine(textFields[27].getText(), textFields[28].getText(),
+          textFields[30].getText(), textFields[31].getText(), textFields[32].getText(),
+          textFields[33].getText(), textFields[34].getText(), textFields[35].getText());
+
+      String res = lit.toString();
+
+      setText(buttonCopyOutputToClipboard, res);
     });
 
     TabItem tabAcademicPaper = new TabItem(tabFolder, SWT.NONE);
@@ -711,21 +657,21 @@ public class GUI {
     Composite compositeAcademicPaper = new Composite(tabFolder, SWT.NONE);
     tabAcademicPaper.setControl(compositeAcademicPaper);
 
-    Label label_4 = new Label(compositeAcademicPaper, SWT.NONE);
-    label_4.setText("Name");
-    label_4.setBounds(10, 10, 59, 14);
+    Label label4 = new Label(compositeAcademicPaper, SWT.NONE);
+    label4.setText("Name");
+    label4.setBounds(10, 10, 59, 14);
 
-    Label label_5 = new Label(compositeAcademicPaper, SWT.NONE);
-    label_5.setText("Vorname");
-    label_5.setBounds(10, 30, 59, 14);
+    Label label5 = new Label(compositeAcademicPaper, SWT.NONE);
+    label5.setText(titlePrename);
+    label5.setBounds(10, 30, 59, 14);
 
-    Label label_6 = new Label(compositeAcademicPaper, SWT.NONE);
-    label_6.setText("Jahr");
-    label_6.setBounds(10, 50, 59, 14);
+    Label label6 = new Label(compositeAcademicPaper, SWT.NONE);
+    label6.setText("Jahr");
+    label6.setBounds(10, 50, 59, 14);
 
-    Label label_7 = new Label(compositeAcademicPaper, SWT.NONE);
-    label_7.setText("Titel");
-    label_7.setBounds(10, 70, 59, 14);
+    Label label7 = new Label(compositeAcademicPaper, SWT.NONE);
+    label7.setText(titleTitle);
+    label7.setBounds(10, 70, 59, 14);
 
     Label labelFormOfPaper = new Label(compositeAcademicPaper, SWT.NONE);
     labelFormOfPaper.setText("Form der Arbeit");
@@ -755,61 +701,46 @@ public class GUI {
     textFields[25].setBounds(180, 105, 470, 19);
     textFields[26].setBounds(180, 125, 351, 19);
 
-    Button button_1 = new Button(compositeAcademicPaper, SWT.NONE);
-    button_1.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
+    Button button1 = new Button(compositeAcademicPaper, SWT.NONE);
+    button1.setText(titleCreate);
+    button1.setBounds(537, 123, 113, 28);
+    button1.addListener(SWT.Selection, e -> {
+      if (e.type != SWT.Selection) return;
+      if (textFields[16].getText().equals("") || textFields[21].getText().equals("")
+          || textFields[22].getText().equals("") || textFields[23].getText().equals("")
+          || textFields[24].getText().equals("") || textFields[25].getText().equals("")
+          || textFields[26].getText().equals("")) {
+        MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
+        messageBox.setMessage(missingDetailsMessage);
+        messageBox.open();
+        return;
       }
-    });
-    button_1.setText("Erzeugen");
-    button_1.setBounds(537, 123, 113, 28);
-
-    button_1.addListener(SWT.Selection, new Listener() {
-      public void handleEvent(Event e) {
-        switch (e.type) {
-        case SWT.Selection:
-          if (textFields[16].getText().equals("") || textFields[21].getText().equals("")
-              || textFields[22].getText().equals("") || textFields[23].getText().equals("")
-              || textFields[24].getText().equals("") || textFields[25].getText().equals("")
-              || textFields[26].getText().equals("")) {
-            MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
-            messageBox.setMessage("Bitte machen Sie alle notwendigen Angaben.");
-            messageBox.open();
-            break;
-          }
-          try {
-            Integer.parseInt(textFields[22].getText());
-          } catch (NumberFormatException ex) {
-            MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
-            messageBox.setMessage("Bitte geben Sie eine gültige Zahl als Jahr an.");
-            messageBox.open();
-            break;
-          }
-          AcademicPaper lit = new AcademicPaper(textFields[16].getText(), textFields[21].getText(),
-              textFields[22].getText(), textFields[23].getText(), textFields[24].getText(),
-              textFields[25].getText(), textFields[26].getText(), "");
-
-          String res = lit.toString();
-
-          setText(buttonCopyOutputToClipboard, res);
-          break;
-        }
+      try {
+        Integer.parseInt(textFields[22].getText());
+      } catch (NumberFormatException ex) {
+        MessageBox messageBox = new MessageBox(bibliographyShell, SWT.ICON_INFORMATION | SWT.OK);
+        messageBox.setMessage(noValidYearMessage);
+        messageBox.open();
+        return;
       }
+      AcademicPaper lit = new AcademicPaper(textFields[16].getText(), textFields[21].getText(),
+          textFields[22].getText(), textFields[23].getText(), textFields[24].getText(),
+          textFields[25].getText(), textFields[26].getText(), "");
+
+      String res = lit.toString();
+
+      setText(buttonCopyOutputToClipboard, res);
     });
 
     TabItem tabMovie = new TabItem(tabFolder, SWT.NONE);
     tabMovie.setText("Film");
-    buttonSearch.addListener(SWT.Selection, new Listener() {
-      public void handleEvent(Event e) {
-        switch (e.type) {
-        case SWT.Selection:
+    buttonSearch.addListener(SWT.Selection, e -> {
+      if (e.type == SWT.Selection) return;
 
-          FileDialog dialog = new FileDialog(bibliographyShell, SWT.SAVE);
-          dialog.setFilterNames(new String[] { "Textdatei", "All Files (*.txt)" });
-          dialog.setFilterExtensions(new String[] { "*.txt", "*.*" });
-          dialog.setFileName("harvard_references.txt");
-        }
-      }
+      FileDialog dialog = new FileDialog(bibliographyShell, SWT.SAVE);
+      dialog.setFilterNames(new String[] { "Textdatei", "All Files (*.txt)" });
+      dialog.setFilterExtensions(new String[] { "*.txt", "*.*" });
+      dialog.setFileName("harvard_references.txt");
     });
   }
 

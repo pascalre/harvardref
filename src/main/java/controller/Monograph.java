@@ -1,10 +1,6 @@
 package controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class Monograph implements Source {
-  Map<String, String> data = new HashMap<String, String>();
+public class Monograph extends Source {
 
   public Monograph(String name, String forename, String year, String title, String publisher, String binding,
       String edition, String place, String press) {
@@ -23,7 +19,7 @@ public class Monograph implements Source {
     if (data.isEmpty())
       return "Error. Objekt nicht korrekt erstellt.";
 
-    StringBuffer sb = new StringBuffer("");
+    StringBuilder sb = new StringBuilder("");
     String name = data.get("name");
     String forename = data.get("forename");
     String year = data.get("year");
